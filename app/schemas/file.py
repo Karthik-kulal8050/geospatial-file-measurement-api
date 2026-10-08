@@ -1,5 +1,4 @@
-from typing import Optional
-
+from typing import Optional, Any
 from pydantic import BaseModel
 
 
@@ -15,6 +14,8 @@ class FileResponse(BaseModel):
 class MeasurementResponse(BaseModel):
     feature_id: int
     geometry_type: str
+    geometry: Optional[dict[str, Any]] = None
+    properties: Optional[dict[str, Any]] = None
     measurement: Optional[float] = None
     unit: Optional[str] = None
 

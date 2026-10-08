@@ -1,5 +1,5 @@
+import json
 from typing import Any
-
 import geopandas as gpd
 
 
@@ -14,9 +14,20 @@ def calculate_measurements(
         geometry = row.geometry
         geometry_type = geometry.geom_type
 
+        # Convert geometry to GeoJSON-style dictionary
+        geometry_data = geometry.__geo_interface__
+
+        # Extract feature properties/attributes
+        properties = {
+            str(key): value
+            for key, value in row.drop(labels="geometry").items()
+        }
+
         result = {
-            "feature_id": index,
+            "feature_id": int(index),
             "geometry_type": geometry_type,
+            "geometry": geometry_data,
+            "properties": properties,
             "measurement": None,
             "unit": None,
             "status": "NOT_REQUIRED",
@@ -37,7 +48,7 @@ def calculate_measurements(
 
         else:
             result["status"] = "UNSUPPORTED"
-            
+
         results.append(result)
 
     return results

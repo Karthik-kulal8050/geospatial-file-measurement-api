@@ -1,6 +1,6 @@
 from pathlib import Path
 import shutil
-
+import json
 from fastapi import (
     APIRouter,
     UploadFile,
@@ -101,6 +101,8 @@ async def upload_file(
                 file_id=file_record.id,
                 feature_id=result["feature_id"],
                 geometry_type=result["geometry_type"],
+                geometry=json.dumps(result["geometry"]),
+                properties=json.dumps(result["properties"], default=str),
                 measurement=result["measurement"],
                 unit=result["unit"],
             )
@@ -193,11 +195,13 @@ def get_measurements(
         "file_id": file_id,
         "measurements": [
             {
-                "feature_id": item.feature_id,
-                "geometry_type": item.geometry_type,
-                "measurement": item.measurement,
-                "unit": item.unit,
+                "feature_id": m.feature_id,
+                "geometry_type": m.geometry_type,
+                "geometry": json.loads(m.geometry) if m.geometry else None,
+                "properties": json.loads(m.properties) if m.properties else None,
+                "measurement": m.measurement,
+                "unit": m.unit
             }
-            for item in measurements
+            for m in measurements
         ]
     }

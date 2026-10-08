@@ -85,6 +85,12 @@ def test_kml_upload_and_measurements():
 
     assert len(measurement_data["measurements"]) == 3
 
+    for item in measurement_data["measurements"]:
+        assert "geometry" in item
+        assert "properties" in item
+        assert item["geometry"] is not None
+        assert item["properties"] is not None
+
     measurements = measurement_data["measurements"]
 
     polygon = next(
